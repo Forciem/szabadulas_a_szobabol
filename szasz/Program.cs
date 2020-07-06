@@ -26,6 +26,9 @@ namespace adventure_game
                 bool parancs_fut = false;
                 bool feszitovas = false;
                 bool ablak = false;
+                bool szekreny_nyitva = false;
+                bool szekreny_elhuzva = false;
+
                 Console.WriteLine("Szabadulás a szobából");
                 Console.WriteLine("\nEgy hideg padlón fekszel, és borzasztó fejfájásod van.\n" +
                     "Nem tudod, hogyan kerültél ide, az utolsó emléked, hogy a város utcáin sétáltál,\n" +
@@ -59,25 +62,39 @@ namespace adventure_game
                             }
                         else
                         {
-                            if (parancs == "nézd")
-
+                            if (parancs == "nézd" && !ablak)
+                            {
+                                Console.WriteLine("Az elhagyatott szoba egy nappalinak néz ki.\n" +
+                                         "A fal mellett látsz egy rozoga szekrényt. Mögötte mintha a szél fújna.\n" +
+                                         "Tőled nyugatra egy ajtót pillantasz meg.");
+                                parancs_fut = true;
+                            }
+                            if (parancs == "nézd" && ablak)
+                            {
                                 Console.WriteLine("Az elhagyatott szoba egy nappalinak néz ki.\n" +
                                         "A fal mellett látsz egy rozoga szekrényt. Mögötte mintha a szél fújna.\n" +
-                                        "Tőled nyugatra egy ajtót pillantasz meg.");
-                            if (parancs == "nézd" && ablak) Console.WriteLine("Az elhagyatott szoba egy nappalinak néz ki.\n" +
-                                    "A fal mellett látsz egy rozoga szekrényt. Mögötte mintha a szél fújna.\n" +
-                                    "Tőled nyugatra egy ajtót pillantasz meg.\n" +
-                                    "Északra egy betört ablak van.");
+                                        "Tőled nyugatra egy ajtót pillantasz meg.\n" +
+                                        "Északra egy betört ablak van.");
+                                parancs_fut = true;
+                            }
 
                             //menj parancs
 
                             if (parancs == "menj nyugat")
                             {
-                                Console.WriteLine("Elindulsz az ajtó irányába. Lenyomod a kilincset, de az ajtót kulcsra zárták...");
-                                parancs_fut = true;
-
-
+                                if (!ajto)
+                                {
+                                    Console.WriteLine("Elindulsz az ajtó irányába. Lenyomod a kilincset, de az ajtót kulcsra zárták...");
+                                    parancs_fut = true;
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Átmentél a fürdőszobába.");
+                                    szoba = "fürdőszoba";
+                                    parancs_fut = true;
+                                }
                             }
+
                             if (parancs == "menj észak" && ablak)
                             {
                                 Console.WriteLine("Megközelíted az ablakot. Óvatosan átmászol a\n" +
@@ -95,51 +112,52 @@ namespace adventure_game
                                 Console.WriteLine("Ebbe az irányba nem tudsz menni!");
                                 parancs_fut = true;
                             }
-                            {
-
-                            }
 
                             //nyisd parancs
 
-                            if (parancs.Contains("nyisd"))
+
+                            if (parancs == "nyisd szekrény")
                             {
-                                if (parancs == "nyisd szekrény")
-                                {
-                                    Console.WriteLine("Megpróbálod kinyitni a szekrényt. Kisebb erőfeszítés után a\n" +
-                                    "beragadt ajtó kiugrik a helyéről. Az egyik polcon egy fadobozt pillantasz meg.");
-                                    parancs_fut = true;
-                                }
-                                if (parancs == "nyisd ajtó kulcs" && (kulcs && !ajto) || (!kulcs && ajto))
-                                {
-                                    Console.WriteLine("A kulccsal kinyitod az ajtót,\n" +
-                                      "és egy másik szobában találod magad.");
-                                    szoba = "fürdőszoba";
-                                    kulcs = false;
-                                    ajto = true;
-                                    parancs_fut = true;
-                                }
-                                if (parancs == "nyisd doboz" && doboz)
-                                {
-
-                                    Console.WriteLine("Kinyitod a fadobozt. Egy ékszeres doboz az,\n" +
-                                    "de nyaklánc helyett csak egy kicsi kulcsot találsz benne.\n" +
-                                    "vajon mit nyithat?\n" +
-                                    "Megtaláltad a kulcsot!");
-                                    doboz = false;
-                                    kulcs = true;
-                                    parancs_fut = true;
-                                }
-
-                                if (parancs == "nyisd ablak") Console.WriteLine("Megpróbálod kinyitni az ablakot, de beragadt.\n" +
-                                     "Hacsak valamivel be tudnád törni...");
+                                Console.WriteLine("Megpróbálod kinyitni a szekrényt. Kisebb erőfeszítés után a\n" +
+                                "beragadt ajtó kiugrik a helyéről. Az egyik polcon egy fadobozt pillantasz meg.");
+                                parancs_fut = true;
+                                szekreny_nyitva = true;
                             }
+                            if (parancs == "nyisd ajtó kulcs" && (kulcs && !ajto))
+                            {
+                                Console.WriteLine("A kulccsal kinyitod az ajtót,\n" +
+                                  "és egy másik szobában találod magad.");
+                                szoba = "fürdőszoba";
+                                kulcs = false;
+                                ajto = true;
+                                parancs_fut = true;
+                            }
+                            if (parancs == "nyisd fadoboz" && doboz)
+                            {
+
+                                Console.WriteLine("Kinyitod a fadobozt. Egy ékszeres doboz az,\n" +
+                                "de nyaklánc helyett csak egy kicsi kulcsot találsz benne.\n" +
+                                "vajon mit nyithat?\n" +
+                                "Megtaláltad a kulcsot!");
+                                doboz = false;
+                                kulcs = true;
+                                parancs_fut = true;
+                            }
+
+                            if (parancs == "nyisd ablak")
+                            {
+                                Console.WriteLine("Megpróbálod kinyitni az ablakot, de beragadt.\n" +
+                                     "Hacsak valamivel be tudnád törni...");
+                                parancs_fut = true;
+                            }
+
 
 
                             //vedd fel parancs
 
                             if (parancs.Contains("vedd fel"))
                             {
-                                if (parancs == "vedd fel doboz")
+                                if (parancs == "vedd fel fadoboz" && szekreny_nyitva)
                                 {
                                     Console.WriteLine("Felvetted a fadobozt!");
                                     doboz = true;
@@ -151,33 +169,38 @@ namespace adventure_game
 
                             //húzd parancs
 
-                            if (parancs.Contains("húzd"))
+                            if (parancs == "húzd szekrény")
                             {
-                                if (parancs == "húzd szekrény")
-                                {
-                                    Console.WriteLine("Elhúzod a szekrényt. Mögötte egy ablak található! Vajon ki lehet nyitni?");
-                                }
+                                Console.WriteLine("Elhúzod a szekrényt. Mögötte egy ablak található! Vajon ki lehet nyitni?");
+                                parancs_fut = true;
+                                szekreny_elhuzva = true;
                             }
+
 
                             //törd parancs
 
-                            if (parancs.Contains("törd"))
+
+                            if (parancs == "törd ablak" && szekreny_elhuzva)
                             {
-                                if (parancs == "törd ablak") Console.WriteLine("Hezitálsz, hogy puszta kézzel betörd az ablakot,\n" +
-                                    "de nem akarod az ország legszebb keze 2019 díjasát megsebezni.\n" +
-                                    "Biztos van valahol valami, amivel belehet könnyen törni...");
-                                if (parancs == "törd ablak feszítővas" && feszitovas)
-                                    Console.WriteLine("Megragadod a feszítővasat és betöröd az ablak üvegét.\n" +
-                                        " A szilánkok szerencsére nem sebeznek meg");
+                                Console.WriteLine("Hezitálsz, hogy puszta kézzel betörd az ablakot,\n" +
+                                "de nem akarod az ország legszebb keze 2019 díjasát megsebezni.\n" +
+                                "Biztos van valahol valami, amivel belehet könnyen törni...");
+                                parancs_fut = true;
+                            }
+                            if (parancs == "törd ablak feszítővas" && feszitovas && szekreny_elhuzva)
+                            {
+                                Console.WriteLine("Megragadod a feszítővasat és betöröd az ablak üvegét.\n" +
+                                        "A szilánkok szerencsére nem sebeznek meg");
                                 parancs_fut = true;
                                 feszitovas = false;
                                 ablak = true;
-
                             }
+
+
 
                             //egyéb szöveg
 
-                            else if (!parancs_fut) Console.WriteLine("Próbáld összeszedni a gondolataidat!"); //végülis müködik, de messy af
+                            else if (!parancs_fut) Console.WriteLine("Próbáld összeszedni a gondolataidat!");
 
                         }
                     }
@@ -209,7 +232,7 @@ namespace adventure_game
                                     "Egy kádon kívűl már semmi se található a szobában. Talán a kádban lehet valami...");
                                 parancs_fut = true;
                             }
-                            if (parancs == "nézd kád")
+                            if (parancs == "nézd kád" && nez_f)
                             {
                                 Console.WriteLine("Bele nézel a kádba, ami tele van fekete nyálkás dologgal. A kád jobb\n" +
                                     "oldalában fémből készült anyag mutatkozik. Belenyúlsz, hogy kivedd azt.\n" +
@@ -231,19 +254,12 @@ namespace adventure_game
                         }
                     }
                 }
-                Console.WriteLine("grat");
+                Console.WriteLine("Gratulálok! Kivitted a játékot!");
             }
         }
 
     }
 }
 
-//oop nélkül
-//ki lehet már játszani. ismert bugok:
-//- fadobozt fellehet venni, ha zárva a szekrény
-//- fürdőben kiírja, hogy "nézz körbe" hiába nézd a parancs
-//- ablakot ugyanúgy belehet törni a szekrény eltolása nélkül
-//- húzd szekrény parancsnál, "próbáld összeszedni a gondolataidat"
-//- nyisd ablak parancsnál átvisz a fürdőbe
-//- törd ablak feszítővas parancsnál nincsen szöveg
-//- kiírja, az északos és a nem északos  verziót is amikor ablak=true +"próbáld össze..." 
+//oop nélkül (07.08)
+//ki lehet már játszani.
