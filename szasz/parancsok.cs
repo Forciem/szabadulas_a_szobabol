@@ -4,12 +4,12 @@ using System.Text;
 
 namespace szabadulas_a_szobabol
 {
-    class parancsok
+    class Parancsok
     {
         public string parancsnev;
         public bool mukodik;
 
-        public parancsok(string _parancsnev, bool _mukodik)
+        public Parancsok(string _parancsnev, bool _mukodik)
         {
             parancsnev = _parancsnev;
             mukodik = _mukodik;

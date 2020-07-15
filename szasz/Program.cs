@@ -1,17 +1,86 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Xml;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Collections;
 
 namespace szabadulas_a_szobabol
 {
 
-    class program
+    class Program
     {
-        static void Main(string[] args)
+
+
+        static void Main()
         {
-            string[] raktar = new string[10];
+            Targyak kulcs = new Targyak("kulcs", false, false, false, false);
+            Targyak szekreny = new Targyak("szekrény", false, false, false, false);
+            Targyak doboz = new Targyak("doboz", false, false, false, false);
+            Targyak feszitovas = new Targyak("feszítővas", false, false, false, false);
+            Targyak ajto = new Targyak("ajtó", false, false, false, false);
+            Targyak kad = new Targyak("kád", false, false, false, false);
+            Targyak ablak = new Targyak("ablak", false, false, false, false);
+
+            Parancsok nezd = new Parancsok("nézd", true);
+            Parancsok menj = new Parancsok("menj", false);
+            Parancsok vedd_fel = new Parancsok("vedd fel", false);
+            Parancsok huzd = new Parancsok("húzd", false);
+            Parancsok nyisd = new Parancsok("nyisd", false);
+            Parancsok tord = new Parancsok("törd", false);
+
+            Iranyok eszak = new Iranyok("észak", false);
+            Iranyok kelet = new Iranyok("kelet", false);
+            Iranyok del = new Iranyok("dél", false);
+            Iranyok nyugat = new Iranyok("nyugat", false);
+
+            Szobak nappali = new Szobak("nappali", true, false);
+            Szobak furdo = new Szobak("fürdőszoba", false, false);
+            Szobak gyoztes = new Szobak("győztes", false, false);
+
+
+
+
+
             string parancs = " ";
+            string[] inventory = new string[10];
+            string felvett_targy = " ";
+
+            void Raktarbovit()
+            {
+                for (int i = 0; i < inventory.Length; i++)
+                {
+                    if (inventory[i] == null)
+                    {
+                        inventory[i] = felvett_targy;
+                        break;
+                    }
+                }
+            }
+
+            void Raktarmutatas()
+            {
+                for (int i = 0; i < inventory.Length; i++)
+                {
+                    if (inventory[0] != null)
+                    {
+                        if (inventory[i] != null)
+                        {
+                            Console.WriteLine(inventory[i]);
+                        }
+                        else break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Nincs nálad semmi!");
+                        break;
+                    }
+                }
+            }
+
+
 
             void Parancsbekeres()
             {
@@ -20,34 +89,6 @@ namespace szabadulas_a_szobabol
                 parancs = Console.ReadLine();
                 Console.WriteLine();
             }
-            if (!Directory.Exists("save"))
-            {
-                Directory.CreateDirectory("saves");
-            }
-
-            targyak kulcs = new targyak("kulcs", false, false, false, false, 0);
-            targyak szekreny = new targyak("szekrény", false, false, false, false, 1);
-            targyak doboz = new targyak("doboz", false, false, false, false, 2);
-            targyak feszitovas = new targyak("feszítővas", false, false, false, false, 3);
-            targyak ajto = new targyak("ajtó", false, false, false, false, 4);
-            targyak kad = new targyak("kád", false, false, false, false, 5);
-            targyak ablak = new targyak("ablak", false, false, false, false, 6);
-
-            parancsok nezd = new parancsok("nézd", true);
-            parancsok menj = new parancsok("menj", false);
-            parancsok vedd_fel = new parancsok("vedd fel", false);
-            parancsok huzd = new parancsok("húzd", false);
-            parancsok nyisd = new parancsok("nyisd", false);
-            parancsok tord = new parancsok("törd", false);
-
-            iranyok eszak = new iranyok("észak", false);
-            iranyok kelet = new iranyok("kelet", false);
-            iranyok del = new iranyok("dél", false);
-            iranyok nyugat = new iranyok("nyugat", false);
-
-            szobak nappali = new szobak("nappali", true, false);
-            szobak furdo = new szobak("fürdőszoba", false, false);
-            szobak gyoztes = new szobak("győztes", false, false);
 
 
             Console.WriteLine("Szabadulás a szobából");
@@ -65,6 +106,12 @@ namespace szabadulas_a_szobabol
                 while (nappali.szobavan)
                 {
                     Parancsbekeres();
+
+                    if (parancs == "raktár")
+                    {
+                        Console.WriteLine("Ezek vannak a raktáradban: ");
+                        Raktarmutatas();
+                    }
 
                     if (!parancs.Contains(ajto.targynev))
                     {
@@ -162,6 +209,8 @@ namespace szabadulas_a_szobabol
                             doboz.hasznalhato = false;
                             kulcs.hasznalhato = true;
                             doboz.hasznalt = true;
+                            felvett_targy = kulcs.targynev;
+                            Raktarbovit();
                         }
                         else if (doboz.hasznalt) Console.WriteLine("Már kinyitottad a dobozt!");
                     }
@@ -183,6 +232,8 @@ namespace szabadulas_a_szobabol
                             doboz.hasznalhato = true;
                             doboz.interakcio = false;
                             doboz.hasznalt2 = true;
+                            felvett_targy = doboz.targynev;
+                            Raktarbovit();
                         }
                         else if (doboz.hasznalt2) Console.WriteLine("Már felvetted a dobozt");
                     }
@@ -261,10 +312,7 @@ namespace szabadulas_a_szobabol
                         }
                         else Console.WriteLine("Erre nem mehetsz!");
                     }
-                    for (int i = 0; i < raktar.Length; i++)
-                    {
 
-                    }
 
                 }
 
@@ -273,6 +321,9 @@ namespace szabadulas_a_szobabol
                 while (furdo.szobavan)
                 {
                     Parancsbekeres();
+                    Console.WriteLine("Ezek vannak a raktáradban: ");
+                    if (parancs == "raktár") Raktarmutatas();
+
                     if (!furdo.megnezett)
                     {
                         nyisd.mukodik = false;
@@ -309,6 +360,8 @@ namespace szabadulas_a_szobabol
                             kad.interakcio = false;
                             kad.hasznalt = false;
                             feszitovas.hasznalhato = true;
+                            felvett_targy = feszitovas.targynev;
+                            Raktarbovit();
                         }
                         else if (!kad.hasznalt) Console.WriteLine("Már megnézted a kádat!");
                     }
